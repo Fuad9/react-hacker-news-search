@@ -8,13 +8,13 @@ const Routes = () => {
    return (
       <Router>
          <Switch>
-            <Route path="/login" component={Login} />
+            <Route path="/login">
+               <Login />
+            </Route>
 
             <PrivateRoute path="/">
                <Home />
             </PrivateRoute>
-
-            <Route exact path="/" component={Home} />
          </Switch>
       </Router>
    );

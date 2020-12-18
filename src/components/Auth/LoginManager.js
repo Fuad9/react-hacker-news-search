@@ -8,6 +8,19 @@ export const initializeLoginFramework = () => {
    }
 };
 
+// to configure JWT token
+const storeAuthToken = () => {
+   firebase
+      .auth()
+      .currentUser.getIdToken(true)
+      .then((idToken) => {
+         sessionStorage.setItem("token", idToken);
+      })
+      .catch((error) => {
+         console.log(error);
+      });
+};
+
 // google sign in
 export const handleGoogleSignIn = () => {
    const googleProvider = new firebase.auth.GoogleAuthProvider();
@@ -22,28 +35,7 @@ export const handleGoogleSignIn = () => {
             photo: res.user.photoURL,
             success: true,
          };
-         return signedInUser;
-      })
-      .catch((err) => {
-         console.log(err);
-         console.log(err.message);
-      });
-};
-
-// fb sign in
-export const handleFbSignIn = () => {
-   const fbProvider = new firebase.auth.FacebookAuthProvider();
-   return firebase
-      .auth()
-      .signInWithPopup(fbProvider)
-      .then((res) => {
-         const signedInUser = {
-            isSignedIn: true,
-            name: res.user.displayName,
-            email: res.user.email,
-            photo: res.user.photoURL,
-            success: true,
-         };
+         storeAuthToken();
          return signedInUser;
       })
       .catch((err) => {
@@ -62,6 +54,7 @@ export const createUserWithEmailAndPassword = (name, email, password) => {
          newUserInfo.success = true;
          updateUserName(name);
          // verifyEmail();
+         storeAuthToken();
          return newUserInfo;
       })
       .catch((error) => {
